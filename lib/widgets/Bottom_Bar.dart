@@ -3,6 +3,7 @@ import 'package:e/Messages/messageList.dart';
 import 'package:e/screens/buyer/Shops/all_shops.dart';
 import 'package:e/screens/buyer/home_screen.dart';
 import 'package:e/screens/buyer/wishlist.dart';
+import 'package:e/testk.dart';
 import 'package:e/utils/constants.dart';
 
 import 'package:flutter/material.dart';
@@ -23,7 +24,8 @@ class _BottomBarState extends State<BottomBar> {
     HomeScreen(),
     AllShopsScreen(),
     ChatListScreen(),
-    WishlistScreen(),
+    // WishlistScreen(),
+    AdminImageUploadScreen()
   ];
 
   // Tab change hone par yeh function call hoga

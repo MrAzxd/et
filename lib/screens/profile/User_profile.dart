@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e/screens/buyer/cart/cart_screen.dart';
 import 'package:e/screens/buyer/orders.dart';
+import 'package:e/screens/buyer/wishlist.dart';
 import 'package:e/screens/profile/Settings.dart';
 import 'package:e/screens/profile/Support_Screen.dart';
 import 'package:e/utils/constants.dart';
@@ -120,7 +121,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 _buildTile(
                   icon: Icons.favorite,
                   title: "Wishlist",
-                  onTap: () => _handleTap("/wishlist"),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const WishlistScreen(),
+                      ),
+                    );
+                  },
                 ),
                 _buildTile(
                     icon: Icons.settings,

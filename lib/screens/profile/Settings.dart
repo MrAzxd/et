@@ -1,3 +1,6 @@
+import 'package:e/screens/profile/AboutFreshcart.dart';
+import 'package:e/screens/profile/Editprofile.dart';
+import 'package:e/screens/profile/Support_Screen.dart';
 import 'package:e/screens/profile/change_password.dart';
 import 'package:flutter/material.dart';
 
@@ -28,7 +31,13 @@ class SettingsScreen extends StatelessWidget {
               leading: const Icon(Icons.person, color: Colors.green),
               title: const Text("Edit Profile"),
               subtitle: const Text("Change your name, phone or photo"),
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const EditProfileScreen(),
+                  ),
+                );
+              },
             ),
           ),
           Card(
@@ -49,7 +58,7 @@ class SettingsScreen extends StatelessWidget {
             child: ListTile(
               leading: const Icon(Icons.location_on, color: Colors.red),
               title: const Text("Manage Addresses"),
-              subtitle: const Text("Add or update delivery addresses"),
+              subtitle: const Text("Add or update  addresses"),
               onTap: () {},
             ),
           ),
@@ -64,20 +73,21 @@ class SettingsScreen extends StatelessWidget {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
-          SwitchListTile(
-            value: true,
-            onChanged: (value) {},
-            secondary: const Icon(Icons.notifications, color: Colors.blue),
-            title: const Text("Push Notifications"),
-            subtitle: const Text("Get updates about orders & offers"),
-          ),
-          SwitchListTile(
-            value: false,
-            onChanged: (value) {},
-            secondary: const Icon(Icons.dark_mode, color: Colors.purple),
-            title: const Text("Dark Mode"),
-            subtitle: const Text("Enable dark theme for the app"),
-          ),
+          AppPreferences(),
+          // SwitchListTile(
+          //   value: true,
+          //   onChanged: (value) {},
+          //   secondary: const Icon(Icons.notifications, color: Colors.blue),
+          //   title: const Text("Push Notifications"),
+          //   subtitle: const Text("Get updates about orders & offers"),
+          // ),
+          // SwitchListTile(
+          //   value: false,
+          //   onChanged: (value) {},
+          //   secondary: const Icon(Icons.dark_mode, color: Colors.purple),
+          //   title: const Text("Dark Mode"),
+          //   subtitle: const Text("Enable dark theme for the app"),
+          // ),
 
           const SizedBox(height: 20),
 
@@ -96,7 +106,11 @@ class SettingsScreen extends StatelessWidget {
               subtitle: const Text("Get help with your orders & account"),
               onTap: () {
                 // Navigate to HelpSupportScreen
-                Navigator.pushNamed(context, "/help");
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const HelpSupportScreen(),
+                  ),
+                );
               },
             ),
           ),
@@ -105,11 +119,79 @@ class SettingsScreen extends StatelessWidget {
               leading: const Icon(Icons.info, color: Colors.blueGrey),
               title: const Text("About FreshCart"),
               subtitle: const Text("Learn more about this app"),
-              onTap: () {},
+              onTap: () {
+                // Navigate to AboutFreshcartScreen
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const AboutFreshCartScreen(),
+                  ),
+                );
+              },
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class AppPreferences extends StatefulWidget {
+  const AppPreferences({super.key});
+
+  @override
+  State<AppPreferences> createState() => _AppPreferencesState();
+}
+
+class _AppPreferencesState extends State<AppPreferences> {
+  bool _pushNotifications = true;
+  bool _darkMode = false;
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SwitchListTile(
+          value: _pushNotifications,
+          onChanged: (value) {
+            setState(() {
+              _pushNotifications = value;
+            });
+            _showMessage(
+              value
+                  ? 'You will get notifications on updates!'
+                  : 'Notifications turned off',
+            );
+            // TODO: Add push notification logic here
+          },
+          secondary: const Icon(Icons.notifications, color: Colors.blue),
+          title: const Text("Push Notifications"),
+          subtitle: const Text("Get updates about orders & offers"),
+        ),
+        SwitchListTile(
+          value: _darkMode,
+          onChanged: (value) {
+            setState(() {
+              _darkMode = value;
+            });
+            _showMessage(
+              'Dark Mode feature will be added soon!',
+            );
+            // TODO: Add dark/light theme logic here
+          },
+          secondary: const Icon(Icons.dark_mode, color: Colors.purple),
+          title: const Text("Dark Mode"),
+          subtitle: const Text("Enable dark theme for the app"),
+        ),
+      ],
     );
   }
 }

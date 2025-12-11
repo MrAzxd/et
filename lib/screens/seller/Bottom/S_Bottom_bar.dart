@@ -1,4 +1,5 @@
 import 'package:e/Messages/messageList.dart';
+import 'package:e/screens/seller/orders.dart';
 import 'package:e/screens/seller/seller_dashboard_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,7 @@ class _SellerBottomBarState extends State<SellerBottomBar> {
 
   final List<Widget> _pages = const [
     SellerDashboardScreen(),
-    Text("Profile Screen"),
+    OrdersScreen(),
     ChatListScreen(),
     Text("Profile Screen")
   ];

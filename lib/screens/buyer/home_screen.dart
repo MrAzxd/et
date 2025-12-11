@@ -139,8 +139,8 @@ class _HomeScreenState extends State<HomeScreen> {
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   final double screenWidth = constraints.maxWidth;
-                  final double minCardWidth = 85.w;
-                  final double maxCardWidth = 110.w;
+                  final double minCardWidth = 65.w;
+                  final double maxCardWidth = 100.w;
                   final double availableWidth =
                       screenWidth - (2 * kDefaultPadding);
                   final int maxVisibleCards = (availableWidth / minCardWidth)
@@ -223,7 +223,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             .clamp(10.0, 13.0),
                                         color: kTextColor,
                                         fontWeight: FontWeight.w500,
-                                        height: 1.2,
+                                        height: 1.1,
                                       ),
                                     ),
                                   ),

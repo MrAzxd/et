@@ -17,7 +17,7 @@ class StorageService {
       const int targetMaxSize = 500000;
       int quality = 85; // Start with good quality
       List<int> compressed;
-
+   
       do {
         compressed = img.encodeJpg(image, quality: quality);
         if (compressed.length <= targetMaxSize || quality <= 30) break;
