@@ -3,6 +3,7 @@ import 'package:e/Messages/messageList.dart';
 import 'package:e/screens/buyer/Shops/all_shops.dart';
 import 'package:e/screens/buyer/home_screen.dart';
 import 'package:e/screens/buyer/wishlist.dart';
+import 'package:e/test.dart' hide kTextColorSecondary;
 import 'package:e/testk.dart';
 import 'package:e/utils/constants.dart';
 
@@ -22,7 +23,8 @@ class _BottomBarState extends State<BottomBar> {
   // Pages ki list (Aap yahan apne asli screens daal sakte hain)
   final List<Widget> _pages = <Widget>[
     HomeScreen(),
-    AllShopsScreen(),
+    // AllShopsScreen(),
+    OrdersDemoScreen(),
     ChatListScreen(),
     // WishlistScreen(),
     AdminImageUploadScreen()

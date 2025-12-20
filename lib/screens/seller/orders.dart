@@ -219,11 +219,16 @@ class _StatusOrdersScreenState extends State<StatusOrdersScreen> {
           // Now stream only THIS seller's orders
           return StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
-                .collection('orders')
-                .where('status', isEqualTo: widget.status)
-                .where('sellerId', isEqualTo: sellerId)
-                .orderBy('createdAt', descending: true)
-                .snapshots(),
+      .collection('orders')
+      .where('sellerId', isEqualTo: sellerId)
+      .where('status', isEqualTo: widget.status)
+      .snapshots(),
+            // FirebaseFirestore.instance
+            //     .collection('orders')
+            //     .where('status', isEqualTo: widget.status)
+            //     .where('sellerId', isEqualTo: sellerId)
+            //     .orderBy('createdAt', descending: true)
+            //     .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());

@@ -1,3 +1,5 @@
+import 'package:e/screens/auth/SellerScreen.dart';
+import 'package:e/screens/auth/role_selection_screen.dart';
 import 'package:e/screens/buyer/home_screen.dart';
 import 'package:e/screens/seller/Bottom/S_Bottom_bar.dart';
 import 'package:e/test.dart';
@@ -52,6 +54,7 @@ class EcommerceApp extends StatelessWidget {
             title: 'Fresh Cart',
             theme: AppTheme.theme,
             home: SplashScreen(),
+            // home: SellerShopInfoScreen(),
             // home: ContainerColumn(),
             onGenerateRoute: RouteGenerator.generateRoute,
           );
@@ -137,7 +140,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kPrimaryColor,
+      // backgroundColor: kPrimaryColor,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

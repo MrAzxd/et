@@ -1,4 +1,6 @@
 import 'package:e/Messages/messageList.dart';
+import 'package:e/screens/profile/User_profile.dart';
+import 'package:e/screens/seller/Sellerprofile/Seller_profile.dart';
 import 'package:e/screens/seller/orders.dart';
 import 'package:e/screens/seller/seller_dashboard_screen.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +19,8 @@ class _SellerBottomBarState extends State<SellerBottomBar> {
     SellerDashboardScreen(),
     OrdersScreen(),
     ChatListScreen(),
-    Text("Profile Screen")
+    // Text("Profile Screenttt"),
+    SellerProfileScreen()
   ];
 
   void _onItemTapped(int index) {

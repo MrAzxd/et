@@ -58,7 +58,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       v!.length < 3 || v.length > 4 ? '3–4 digits' : null;
 
   // Save N orders (one per shop)
-  Future<void> _placeMultipleOrders(CartProvider cart) async {
+  Future<void> _placeMultipleOrders(CartProvider cart, String paymentMethod) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
       _showSnackBar('Please log in', Colors.red);
@@ -94,6 +94,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               .toList(),
           'totalAmount': group.subtotal,
           'status': 'Pending', // Matches OrdersProvider
+          'paymentMethod': paymentMethod,
           'createdAt': Timestamp.now(),
         };
         ordersToCreate.add(orderData);
@@ -229,13 +230,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       onPressed: () async {
                         if (_selectedPaymentMethod == 'credit_card') {
                           if (_formKey.currentState!.validate()) {
-                            _showSnackBar('Payment processed!', kPrimaryColor);
-                            cart.clearCart();
-                            Navigator.pushNamedAndRemoveUntil(
-                                context, '/home', (route) => false);
+                            // Fix: actually place the order
+                            await _placeMultipleOrders(cart, 'Credit Card');
                           }
                         } else {
-                          await _placeMultipleOrders(cart);
+                          await _placeMultipleOrders(cart, 'Cash on Delivery');
                         }
                       },
                       style: ElevatedButton.styleFrom(

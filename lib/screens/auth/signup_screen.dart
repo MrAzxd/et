@@ -315,6 +315,24 @@ class _SignupScreenState extends State<SignupScreen> {
                                     ),
                               ),
                             ),
+
+                            Text("OR"),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, LoginScreen.routeName);
+                              },
+                              child: Text(
+                                ' Apply as seller',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .copyWith(
+                                      color: kPrimaryColor,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                              ),
+                            ),
                           ],
                         ),
                       ),

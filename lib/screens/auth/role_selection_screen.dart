@@ -5,6 +5,7 @@ import 'package:e/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class RoleSelectionScreen extends StatefulWidget {
   static const String routeName = '/role-selection';
@@ -70,7 +71,7 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
         child: SafeArea(
           child: Center(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(kDefaultPadding),
+              padding: EdgeInsets.all(kDefaultPadding.w),
               child: AnimationLimiter(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -82,21 +83,24 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                     ),
                     children: [
                       // Logo
-                      const Icon(
+                      Icon(
                         Icons.shopping_bag,
-                        size: 80,
+                        size: 80.sp,
                         color: kPrimaryColor,
                       ),
-                      const SizedBox(height: kSmallPadding),
+                      SizedBox(height: kSmallPadding.h),
                       Text(
                         kAppName,
-                        style:
-                            Theme.of(context).textTheme.headlineLarge!.copyWith(
-                                  color: kPrimaryColor,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineLarge!
+                            .copyWith(
+                              color: kPrimaryColor,
+                              fontWeight: FontWeight.bold,
+                            ),
                       ),
-                      const SizedBox(height: kLargePadding),
+                      SizedBox(height: kLargePadding.h),
+
                       // Title
                       Text(
                         'Choose Your Role',
@@ -109,15 +113,19 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                             ),
                         textAlign: TextAlign.center,
                       ),
-                      const SizedBox(height: kSmallPadding),
+                      SizedBox(height: kSmallPadding.h),
                       Text(
                         'Select how you want to experience our platform',
-                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyLarge!
+                            .copyWith(
                               color: kTextColorSecondary,
                             ),
                         textAlign: TextAlign.center,
                       ),
-                      const SizedBox(height: kLargePadding * 2),
+                      SizedBox(height: (kLargePadding * 2).h),
+
                       // Role Selection Cards
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -135,7 +143,7 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                               _selectRole('buyer');
                             },
                           ),
-                          const SizedBox(width: kDefaultPadding),
+                          SizedBox(width: kDefaultPadding.w),
                           _buildRoleCard(
                             context,
                             role: 'Seller',
@@ -151,10 +159,12 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: kLargePadding),
-                      // Loading Indicator
+                      SizedBox(height: kLargePadding.h),
+
                       if (_isLoading)
-                        const CircularProgressIndicator(color: kPrimaryColor),
+                        const CircularProgressIndicator(
+                          color: kPrimaryColor,
+                        ),
                     ],
                   ),
                 ),
@@ -180,44 +190,58 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
         child: Card(
           elevation: isSelected ? 12 : 6,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(kDefaultBorderRadius * 1.5),
+            borderRadius:
+                BorderRadius.circular((kDefaultBorderRadius * 1.5).r),
             side: BorderSide(
-              color: isSelected ? kPrimaryColor : kBorderColor.withOpacity(0.5),
+              color: isSelected
+                  ? kPrimaryColor
+                  : kBorderColor.withOpacity(0.5),
               width: isSelected ? 2 : 1,
             ),
           ),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
-            width: 160,
-            padding: const EdgeInsets.all(kDefaultPadding),
+            width: 160.w,
+            padding: EdgeInsets.all(kDefaultPadding.w),
             decoration: BoxDecoration(
-              color: isSelected ? kPrimaryColor.withOpacity(0.1) : Colors.white,
-              borderRadius: BorderRadius.circular(kDefaultBorderRadius * 1.5),
+              color:
+                  isSelected ? kPrimaryColor.withOpacity(0.1) : Colors.white,
+              borderRadius:
+                  BorderRadius.circular((kDefaultBorderRadius * 1.5).r),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
                   icon,
-                  size: 50,
-                  color: isSelected ? kPrimaryColor : kTextColorSecondary,
+                  size: 50.sp,
+                  color:
+                      isSelected ? kPrimaryColor : kTextColorSecondary,
                 ),
-                const SizedBox(height: kSmallPadding),
+                SizedBox(height: kSmallPadding.h),
                 Text(
                   role,
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                        color: isSelected ? kPrimaryColor : kTextColor,
-                        fontWeight:
-                            isSelected ? FontWeight.bold : FontWeight.normal,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge!
+                      .copyWith(
+                        color:
+                            isSelected ? kPrimaryColor : kTextColor,
+                        fontWeight: isSelected
+                            ? FontWeight.bold
+                            : FontWeight.normal,
                       ),
                 ),
-                const SizedBox(height: kSmallPadding / 2),
+                SizedBox(height: (kSmallPadding / 2).h),
                 Text(
                   note,
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(
                         color: kTextColorSecondary,
-                        fontSize: 12,
+                        fontSize: 12.sp,
                       ),
                   textAlign: TextAlign.center,
                 ),

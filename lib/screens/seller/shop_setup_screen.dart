@@ -42,7 +42,7 @@ class _ShopSetupScreenState extends State<ShopSetupScreen> {
             name: _nameController.text.trim(),
             description: _descriptionController.text.trim(),
           );
-          await _firestoreService.updateUserShopId(user.uid, shopId);
+          await _firestoreService.updateUserShopId(user.uid, shopId );
           Navigator.pushReplacementNamed(
               context, SellerDashboardScreen.routeName);
           ScaffoldMessenger.of(context).showSnackBar(
