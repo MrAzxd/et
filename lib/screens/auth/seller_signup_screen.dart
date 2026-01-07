@@ -1,22 +1,22 @@
 import 'package:e/screens/auth/login_screen.dart';
-import 'package:e/screens/buyer/home_screen.dart';
 import 'package:e/screens/auth/SellerScreen.dart';
+import 'package:e/screens/auth/customer_signup_screen.dart';
 import 'package:e/services/auth_service.dart';
 import 'package:e/utils/constants.dart';
 import 'package:e/utils/validators.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
-class SignupScreen extends StatefulWidget {
-  static const String routeName = '/signup';
+class SellerSignupScreen extends StatefulWidget {
+  static const String routeName = '/seller-signup';
 
-  const SignupScreen({super.key});
+  const SellerSignupScreen({super.key});
 
   @override
-  State<SignupScreen> createState() => _SignupScreenState();
+  State<SellerSignupScreen> createState() => _SellerSignupScreenState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
+class _SellerSignupScreenState extends State<SellerSignupScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -33,7 +33,7 @@ class _SignupScreenState extends State<SignupScreen> {
     super.dispose();
   }
 
-  Future<void> _signup(String role) async {
+  Future<void> _signup() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
@@ -43,14 +43,10 @@ class _SignupScreenState extends State<SignupScreen> {
           _emailController.text.trim(),
           _passwordController.text,
           _nameController.text.trim(),
-          role,
+          'seller',
         );
         if (user != null) {
-          if (role == 'buyer') {
-            Navigator.pushReplacementNamed(context, HomeScreen.routeName);
-          } else if (role == 'seller') {
-            Navigator.pushReplacementNamed(context, SellerShopInfoScreen.routeName);
-          }
+          Navigator.pushReplacementNamed(context, SellerShopInfoScreen.routeName);
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -79,7 +75,7 @@ class _SignupScreenState extends State<SignupScreen> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              kPrimaryColor.withOpacity(0.1),
+              kSecondaryColor.withOpacity(0.1),
               kBackgroundColor,
             ],
           ),
@@ -111,9 +107,9 @@ class _SignupScreenState extends State<SignupScreen> {
                           children: [
                             // Logo
                             const Icon(
-                              Icons.shopping_bag,
+                              Icons.store,
                               size: 80,
-                              color: kPrimaryColor,
+                              color: kSecondaryColor,
                             ),
                             const SizedBox(height: kSmallPadding),
                             Text(
@@ -122,14 +118,14 @@ class _SignupScreenState extends State<SignupScreen> {
                                   .textTheme
                                   .headlineLarge!
                                   .copyWith(
-                                    color: kPrimaryColor,
+                                    color: kSecondaryColor,
                                     fontWeight: FontWeight.bold,
                                   ),
                             ),
                             const SizedBox(height: kLargePadding),
                             // Title
                             Text(
-                              'Create Your Account',
+                              'Sign Up as Seller',
                               style: Theme.of(context)
                                   .textTheme
                                   .headlineMedium!
@@ -140,7 +136,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             ),
                             const SizedBox(height: kSmallPadding),
                             Text(
-                              'Join us to start shopping or selling',
+                              'Create your account to start selling',
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyLarge!
@@ -155,7 +151,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               decoration: InputDecoration(
                                 labelText: 'Name',
                                 prefixIcon: const Icon(Icons.person,
-                                    color: kPrimaryColor),
+                                    color: kSecondaryColor),
                                 filled: true,
                                 fillColor: Colors.white,
                                 border: OutlineInputBorder(
@@ -173,7 +169,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                   borderRadius: BorderRadius.circular(
                                       kDefaultBorderRadius),
                                   borderSide: const BorderSide(
-                                      color: kPrimaryColor, width: 2),
+                                      color: kSecondaryColor, width: 2),
                                 ),
                               ),
                               validator: (value) =>
@@ -186,7 +182,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               decoration: InputDecoration(
                                 labelText: 'Email',
                                 prefixIcon: const Icon(Icons.email,
-                                    color: kPrimaryColor),
+                                    color: kSecondaryColor),
                                 filled: true,
                                 fillColor: Colors.white,
                                 border: OutlineInputBorder(
@@ -204,7 +200,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                   borderRadius: BorderRadius.circular(
                                       kDefaultBorderRadius),
                                   borderSide: const BorderSide(
-                                      color: kPrimaryColor, width: 2),
+                                      color: kSecondaryColor, width: 2),
                                 ),
                               ),
                               keyboardType: TextInputType.emailAddress,
@@ -217,7 +213,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               decoration: InputDecoration(
                                 labelText: 'Password',
                                 prefixIcon: const Icon(Icons.lock,
-                                    color: kPrimaryColor),
+                                    color: kSecondaryColor),
                                 suffixIcon: IconButton(
                                   icon: AnimatedSwitcher(
                                     duration: const Duration(milliseconds: 200),
@@ -252,99 +248,55 @@ class _SignupScreenState extends State<SignupScreen> {
                                   borderRadius: BorderRadius.circular(
                                       kDefaultBorderRadius),
                                   borderSide: const BorderSide(
-                                      color: kPrimaryColor, width: 2),
+                                      color: kSecondaryColor, width: 2),
                                 ),
                               ),
                               obscureText: _obscurePassword,
                               validator: Validators.validatePassword,
                             ),
                             const SizedBox(height: kLargePadding),
-                            // Signup Buttons
+                            // Signup Button
                             _isLoading
                                 ? const CircularProgressIndicator(
-                                    color: kPrimaryColor)
-                                : Column(
-                                    children: [
-                                      AnimatedScaleButton(
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            gradient: LinearGradient(
-                                              colors: [
-                                                kPrimaryColor,
-                                                kPrimaryColor.withOpacity(0.8)
-                                              ],
-                                              begin: Alignment.topLeft,
-                                              end: Alignment.bottomRight,
-                                            ),
+                                    color: kSecondaryColor)
+                                : AnimatedScaleButton(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            kSecondaryColor,
+                                            kSecondaryColor.withOpacity(0.8)
+                                          ],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                        ),
+                                        borderRadius: BorderRadius.circular(
+                                            kDefaultBorderRadius),
+                                      ),
+                                      child: ElevatedButton(
+                                        onPressed: _signup,
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.transparent,
+                                          shadowColor: Colors.transparent,
+                                          shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(
                                                 kDefaultBorderRadius),
                                           ),
-                                          child: ElevatedButton(
-                                            onPressed: () => _signup('buyer'),
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.transparent,
-                                              shadowColor: Colors.transparent,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(
-                                                    kDefaultBorderRadius),
-                                              ),
-                                              padding: const EdgeInsets.symmetric(
-                                                vertical: 16,
-                                                horizontal: 32,
-                                              ),
-                                            ),
-                                            child: const Text(
-                                              'Register as Customer',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 16,
+                                            horizontal: 32,
+                                          ),
+                                        ),
+                                        child: const Text(
+                                          'Sign Up as Seller',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
                                           ),
                                         ),
                                       ),
-                                      const SizedBox(height: kDefaultPadding),
-                                      AnimatedScaleButton(
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            gradient: LinearGradient(
-                                              colors: [
-                                                kSecondaryColor,
-                                                kSecondaryColor.withOpacity(0.8)
-                                              ],
-                                              begin: Alignment.topLeft,
-                                              end: Alignment.bottomRight,
-                                            ),
-                                            borderRadius: BorderRadius.circular(
-                                                kDefaultBorderRadius),
-                                          ),
-                                          child: ElevatedButton(
-                                            onPressed: () => _signup('seller'),
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.transparent,
-                                              shadowColor: Colors.transparent,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(
-                                                    kDefaultBorderRadius),
-                                              ),
-                                              padding: const EdgeInsets.symmetric(
-                                                vertical: 16,
-                                                horizontal: 32,
-                                              ),
-                                            ),
-                                            child: const Text(
-                                              'Register as Seller',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                    ),
                                   ),
                             const SizedBox(height: kDefaultPadding),
                             // Login Link
@@ -359,20 +311,19 @@ class _SignupScreenState extends State<SignupScreen> {
                                     .textTheme
                                     .bodyLarge!
                                     .copyWith(
-                                      color: kPrimaryColor,
+                                      color: kSecondaryColor,
                                       fontWeight: FontWeight.w600,
                                     ),
                               ),
                             ),
-
-                            Text("OR"),
+                            // Switch to Customer Signup
                             TextButton(
                               onPressed: () {
-                                Navigator.pushNamed(
-                                    context, LoginScreen.routeName);
+                                Navigator.pushReplacementNamed(
+                                    context, CustomerSignupScreen.routeName);
                               },
                               child: Text(
-                                ' Apply as seller',
+                                'Want to buy? Sign up as Customer',
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyLarge!

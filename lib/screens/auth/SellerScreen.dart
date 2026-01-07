@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:e/utils/constants.dart';
+import 'package:e/screens/seller/request_screen.dart';
+import 'package:e/services/auth_service.dart';
+import 'package:e/services/firestore_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SellerShopInfoScreen extends StatefulWidget {
   static const String routeName = '/seller-shop-info';
@@ -23,24 +27,106 @@ class _SellerShopInfoScreenState extends State<SellerShopInfoScreen> {
   final descriptionController = TextEditingController();
 
   bool _isLoading = false;
+  bool _isEditing = false;
+  final AuthService _authService = AuthService();
+  final FirestoreService _firestoreService = FirestoreService();
 
-  void _submitShopInfo() {
+  @override
+  void initState() {
+    super.initState();
+    _loadExistingData();
+  }
+
+  Future<void> _loadExistingData() async {
+    setState(() => _isLoading = true);
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        final userData = await _firestoreService.getUserData(user.uid);
+        final existingRequest = await _firestoreService.getSellerRequest(user.uid);
+        
+        if (userData != null && existingRequest != null && mounted) {
+          setState(() {
+            _isEditing = true;
+            shopNameController.text = userData['shopName'] ?? '';
+            ownerNameController.text = userData['name'] ?? '';
+            addressController.text = userData['shopAddress'] ?? '';
+            cityController.text = userData['city'] ?? '';
+            categoryController.text = userData['shopCategory'] ?? '';
+            cnicController.text = userData['cnic'] ?? '';
+            descriptionController.text = userData['shopDescription'] ?? '';
+          });
+        }
+      }
+    } catch (e) {
+      // Handle error silently or show a message
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  void _submitShopInfo() async {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
 
-      // 🔥 Firestore save logic (status = pending) will go here
+      try {
+        final user = FirebaseAuth.instance.currentUser;
+        if (user != null) {
+          // Save shop details to user document
+          await _authService.updateUserShopDetails(
+            user.uid,
+            shopName: shopNameController.text.trim(),
+            city: cityController.text.trim(),
+            shopAddress: addressController.text.trim(),
+            shopCategory: categoryController.text.trim(),
+            cnic: cnicController.text.trim(),
+            shopDescription: descriptionController.text.trim(),
+          );
 
-      Future.delayed(const Duration(seconds: 2), () {
-        setState(() => _isLoading = false);
+          // Check if user already has a request (for resubmission)
+          final existingRequest = await _firestoreService.getSellerRequest(user.uid);
+          if (existingRequest != null) {
+            // Update existing request status to pending (resubmission)
+            await _firestoreService.updateRequestStatus(user.uid, 'pending');
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text("Shop information updated and resubmitted for admin approval"),
+                ),
+              );
+            }
+          } else {
+            // Create new seller request
+            await _firestoreService.createSellerRequest(user.uid);
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text("Shop submitted for admin approval"),
+                ),
+              );
+            }
+          }
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Shop submitted for admin approval"),
-          ),
-        );
-
-        Navigator.pop(context);
-      });
+          if (mounted) {
+            Navigator.pushReplacementNamed(context, RequestScreen.routeName);
+          }
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Failed to submit shop: ${e.toString()}"),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      } finally {
+        if (mounted) {
+          setState(() => _isLoading = false);
+        }
+      }
     }
   }
 
@@ -49,7 +135,7 @@ class _SellerShopInfoScreenState extends State<SellerShopInfoScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Shop Information',
+          _isEditing ? 'Edit Shop Information' : 'Shop Information',
           style: TextStyle(fontSize: 18.sp),
         ),
         centerTitle: true,
@@ -126,7 +212,7 @@ class _SellerShopInfoScreenState extends State<SellerShopInfoScreen> {
                   child: _isLoading
                       ? const CircularProgressIndicator(color: Colors.white)
                       : Text(
-                          'SUBMIT FOR APPROVAL',
+                          _isEditing ? 'UPDATE & RESUBMIT' : 'SUBMIT FOR APPROVAL',
                           style: TextStyle(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.bold,
@@ -146,7 +232,7 @@ class _SellerShopInfoScreenState extends State<SellerShopInfoScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Seller Shop Details',
+          _isEditing ? 'Update Your Shop Details' : 'Seller Shop Details',
           style: TextStyle(
             fontSize: 22.sp,
             fontWeight: FontWeight.bold,
@@ -155,7 +241,9 @@ class _SellerShopInfoScreenState extends State<SellerShopInfoScreen> {
         ),
         SizedBox(height: 6.h),
         Text(
-          'Provide accurate information for admin verification',
+          _isEditing 
+            ? 'Update your information and resubmit for admin approval'
+            : 'Provide accurate information for admin verification',
           style: TextStyle(
             fontSize: 14.sp,
             color: kTextColorSecondary,

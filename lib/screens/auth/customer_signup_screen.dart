@@ -1,22 +1,22 @@
 import 'package:e/screens/auth/login_screen.dart';
 import 'package:e/screens/buyer/home_screen.dart';
-import 'package:e/screens/auth/SellerScreen.dart';
+import 'package:e/screens/auth/seller_signup_screen.dart';
 import 'package:e/services/auth_service.dart';
 import 'package:e/utils/constants.dart';
 import 'package:e/utils/validators.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
-class SignupScreen extends StatefulWidget {
-  static const String routeName = '/signup';
+class CustomerSignupScreen extends StatefulWidget {
+  static const String routeName = '/customer-signup';
 
-  const SignupScreen({super.key});
+  const CustomerSignupScreen({super.key});
 
   @override
-  State<SignupScreen> createState() => _SignupScreenState();
+  State<CustomerSignupScreen> createState() => _CustomerSignupScreenState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
+class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -33,7 +33,7 @@ class _SignupScreenState extends State<SignupScreen> {
     super.dispose();
   }
 
-  Future<void> _signup(String role) async {
+  Future<void> _signup() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
@@ -43,14 +43,10 @@ class _SignupScreenState extends State<SignupScreen> {
           _emailController.text.trim(),
           _passwordController.text,
           _nameController.text.trim(),
-          role,
+          'buyer',
         );
         if (user != null) {
-          if (role == 'buyer') {
-            Navigator.pushReplacementNamed(context, HomeScreen.routeName);
-          } else if (role == 'seller') {
-            Navigator.pushReplacementNamed(context, SellerShopInfoScreen.routeName);
-          }
+          Navigator.pushReplacementNamed(context, HomeScreen.routeName);
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -129,7 +125,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             const SizedBox(height: kLargePadding),
                             // Title
                             Text(
-                              'Create Your Account',
+                              'Sign Up as Customer',
                               style: Theme.of(context)
                                   .textTheme
                                   .headlineMedium!
@@ -140,7 +136,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             ),
                             const SizedBox(height: kSmallPadding),
                             Text(
-                              'Join us to start shopping or selling',
+                              'Create your account to start shopping',
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyLarge!
@@ -259,92 +255,48 @@ class _SignupScreenState extends State<SignupScreen> {
                               validator: Validators.validatePassword,
                             ),
                             const SizedBox(height: kLargePadding),
-                            // Signup Buttons
+                            // Signup Button
                             _isLoading
                                 ? const CircularProgressIndicator(
                                     color: kPrimaryColor)
-                                : Column(
-                                    children: [
-                                      AnimatedScaleButton(
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            gradient: LinearGradient(
-                                              colors: [
-                                                kPrimaryColor,
-                                                kPrimaryColor.withOpacity(0.8)
-                                              ],
-                                              begin: Alignment.topLeft,
-                                              end: Alignment.bottomRight,
-                                            ),
+                                : AnimatedScaleButton(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            kPrimaryColor,
+                                            kPrimaryColor.withOpacity(0.8)
+                                          ],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                        ),
+                                        borderRadius: BorderRadius.circular(
+                                            kDefaultBorderRadius),
+                                      ),
+                                      child: ElevatedButton(
+                                        onPressed: _signup,
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.transparent,
+                                          shadowColor: Colors.transparent,
+                                          shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(
                                                 kDefaultBorderRadius),
                                           ),
-                                          child: ElevatedButton(
-                                            onPressed: () => _signup('buyer'),
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.transparent,
-                                              shadowColor: Colors.transparent,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(
-                                                    kDefaultBorderRadius),
-                                              ),
-                                              padding: const EdgeInsets.symmetric(
-                                                vertical: 16,
-                                                horizontal: 32,
-                                              ),
-                                            ),
-                                            child: const Text(
-                                              'Register as Customer',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 16,
+                                            horizontal: 32,
+                                          ),
+                                        ),
+                                        child: const Text(
+                                          'Sign Up as Customer',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
                                           ),
                                         ),
                                       ),
-                                      const SizedBox(height: kDefaultPadding),
-                                      AnimatedScaleButton(
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            gradient: LinearGradient(
-                                              colors: [
-                                                kSecondaryColor,
-                                                kSecondaryColor.withOpacity(0.8)
-                                              ],
-                                              begin: Alignment.topLeft,
-                                              end: Alignment.bottomRight,
-                                            ),
-                                            borderRadius: BorderRadius.circular(
-                                                kDefaultBorderRadius),
-                                          ),
-                                          child: ElevatedButton(
-                                            onPressed: () => _signup('seller'),
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.transparent,
-                                              shadowColor: Colors.transparent,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(
-                                                    kDefaultBorderRadius),
-                                              ),
-                                              padding: const EdgeInsets.symmetric(
-                                                vertical: 16,
-                                                horizontal: 32,
-                                              ),
-                                            ),
-                                            child: const Text(
-                                              'Register as Seller',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                    ),
                                   ),
                             const SizedBox(height: kDefaultPadding),
                             // Login Link
@@ -364,20 +316,19 @@ class _SignupScreenState extends State<SignupScreen> {
                                     ),
                               ),
                             ),
-
-                            Text("OR"),
+                            // Switch to Seller Signup
                             TextButton(
                               onPressed: () {
-                                Navigator.pushNamed(
-                                    context, LoginScreen.routeName);
+                                Navigator.pushReplacementNamed(
+                                    context, SellerSignupScreen.routeName);
                               },
                               child: Text(
-                                ' Apply as seller',
+                                'Want to sell? Sign up as Seller',
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyLarge!
                                     .copyWith(
-                                      color: kPrimaryColor,
+                                      color: kSecondaryColor,
                                       fontWeight: FontWeight.w600,
                                     ),
                               ),

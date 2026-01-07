@@ -6,6 +6,12 @@ class UserModel {
   final String role; // buyer, seller, or admin
   final String? name;
   final String? shopId; // Only for sellers, links to their shop
+  final String? shopName;
+  final String? city;
+  final String? shopAddress;
+  final String? shopCategory;
+  final String? cnic;
+  final String? shopDescription;
 
   UserModel({
     required this.id,
@@ -13,6 +19,12 @@ class UserModel {
     required this.role,
     this.name,
     this.shopId,
+    this.shopName,
+    this.city,
+    this.shopAddress,
+    this.shopCategory,
+    this.cnic,
+    this.shopDescription,
   });
 
   // Convert UserModel to Firestore document
@@ -22,6 +34,12 @@ class UserModel {
       'role': role,
       'name': name,
       'shopId': shopId,
+      'shopName': shopName,
+      'city': city,
+      'shopAddress': shopAddress,
+      'shopCategory': shopCategory,
+      'cnic': cnic,
+      'shopDescription': shopDescription,
     };
   }
 
@@ -33,6 +51,12 @@ class UserModel {
       role: map['role'] ?? '',
       name: map['name'],
       shopId: map['shopId'],
+      shopName: map['shopName'],
+      city: map['city'],
+      shopAddress: map['shopAddress'],
+      shopCategory: map['shopCategory'],
+      cnic: map['cnic'],
+      shopDescription: map['shopDescription'],
     );
   }
 

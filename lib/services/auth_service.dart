@@ -22,8 +22,8 @@ class AuthService {
     }
   }
 
-  // Sign up with email, password, and name
-  Future<User?> signUp(String email, String password, String name) async {
+  // Sign up with email, password, name, and role
+  Future<User?> signUp(String email, String password, String name, String role) async {
     try {
       final UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
@@ -35,7 +35,7 @@ class AuthService {
         final userModel = UserModel(
           id: user.uid,
           email: email,
-          role: '', // Role will be set in RoleSelectionScreen
+          role: role,
           name: name,
         );
         await _firestore
@@ -107,14 +107,27 @@ class AuthService {
     }
   }
 
-  // Update user shopId
-  Future<void> updateUserShopId(String userId, String shopId) async {
+  // Update user shop details
+  Future<void> updateUserShopDetails(String userId, {
+    String? shopName,
+    String? city,
+    String? shopAddress,
+    String? shopCategory,
+    String? cnic,
+    String? shopDescription,
+  }) async {
     try {
-      await _firestore.collection(kUsersCollection).doc(userId).update({
-        'shopId': shopId,
-      });
+      final Map<String, dynamic> updates = {};
+      if (shopName != null) updates['shopName'] = shopName;
+      if (city != null) updates['city'] = city;
+      if (shopAddress != null) updates['shopAddress'] = shopAddress;
+      if (shopCategory != null) updates['shopCategory'] = shopCategory;
+      if (cnic != null) updates['cnic'] = cnic;
+      if (shopDescription != null) updates['shopDescription'] = shopDescription;
+      
+      await _firestore.collection(kUsersCollection).doc(userId).update(updates);
     } catch (e) {
-      throw Exception('Failed to update shop ID: $e');
+      throw Exception('Failed to update shop details: $e');
     }
   }
 

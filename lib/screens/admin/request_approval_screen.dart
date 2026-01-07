@@ -19,25 +19,90 @@ class _RequestApprovalScreenState extends State<RequestApprovalScreen> {
   final FirestoreService _firestoreService = FirestoreService();
 
   Future<void> _updateRequestStatus(String requestId, String status) async {
-    try {
-      await _firestoreService.updateRequestStatus(requestId, status);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Request ${status.toLowerCase()} successfully!'),
-          backgroundColor: kPrimaryColor,
-        ),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Failed to update request: ${e.toString()}',
-            style: const TextStyle(color: Colors.white),
+    if (status == 'rejected') {
+      // Show rejection reason dialog
+      final reason = await _showRejectionDialog();
+      if (reason != null) {
+        await _firestoreService.updateRequestStatus(requestId, status, rejectionReason: reason);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Request rejected successfully!'),
+            backgroundColor: kPrimaryColor,
           ),
-          backgroundColor: kErrorColor,
-        ),
-      );
+        );
+      }
+    } else {
+      // For approval, no reason needed
+      try {
+        await _firestoreService.updateRequestStatus(requestId, status);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Request ${status.toLowerCase()} successfully!'),
+            backgroundColor: kPrimaryColor,
+          ),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Failed to update request: ${e.toString()}',
+              style: const TextStyle(color: Colors.white),
+            ),
+            backgroundColor: kErrorColor,
+          ),
+        );
+      }
     }
+  }
+
+  Future<String?> _showRejectionDialog() async {
+    final TextEditingController reasonController = TextEditingController();
+    
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Reject Request'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Please provide a reason for rejection:'),
+              const SizedBox(height: 16),
+              TextField(
+                controller: reasonController,
+                maxLines: 3,
+                decoration: const InputDecoration(
+                  hintText: 'Enter rejection reason...',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                final reason = reasonController.text.trim();
+                if (reason.isNotEmpty) {
+                  Navigator.of(context).pop(reason);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please enter a rejection reason'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              },
+              child: const Text('Reject'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -101,11 +166,11 @@ class _RequestApprovalScreenState extends State<RequestApprovalScreen> {
                   String email = 'Loading...';
                   if (userSnapshot.connectionState == ConnectionState.done) {
                     if (userSnapshot.hasData && userSnapshot.data != null) {
-                      name = userSnapshot.data!['name'] ?? 'Unknown';
-                      email = userSnapshot.data!['email'] ?? 'Unknown';
+                      name = userSnapshot.data!['name'] ?? '-';
+                      email = userSnapshot.data!['email'] ?? '-';
                     } else {
-                      name = 'Unknown';
-                      email = 'Unknown';
+                      name = '-';
+                      email = '-';
                     }
                   }
                   return Card(
@@ -120,7 +185,7 @@ class _RequestApprovalScreenState extends State<RequestApprovalScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Name: $name',
+                            'Name: ${name ?? "-"}',
                             style:
                                 Theme.of(context).textTheme.bodyLarge!.copyWith(
                                       color: kTextColor,
@@ -129,7 +194,7 @@ class _RequestApprovalScreenState extends State<RequestApprovalScreen> {
                           ),
                           const SizedBox(height: kSmallPadding),
                           Text(
-                            'Email: $email',
+                            'Email: ${email ?? "-"}',
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium!
@@ -137,6 +202,67 @@ class _RequestApprovalScreenState extends State<RequestApprovalScreen> {
                                   color: kTextColorSecondary,
                                 ),
                           ),
+                          const SizedBox(height: kSmallPadding),
+                          Text(
+                            'Shop Name: ${userSnapshot.data?['shopName'] ?? "-"}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(
+                                  color: kTextColorSecondary,
+                                ),
+                          ),
+                          const SizedBox(height: kSmallPadding),
+                          Text(
+                            'City: ${userSnapshot.data?['city'] ?? "-"}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(
+                                  color: kTextColorSecondary,
+                                ),
+                          ),
+                          const SizedBox(height: kSmallPadding),
+                          Text(
+                            'Shop Address: ${userSnapshot.data?['shopAddress'] ?? "-"}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(
+                                  color: kTextColorSecondary,
+                                ),
+                          ),
+                          const SizedBox(height: kSmallPadding),
+                          Text(
+                            'Shop Category: ${userSnapshot.data?['shopCategory'] ?? "-"}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(
+                                  color: kTextColorSecondary,
+                                ),
+                          ),
+                          const SizedBox(height: kSmallPadding),
+                          Text(
+                            'CNIC: ${userSnapshot.data?['cnic'] ?? "-"}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(
+                                  color: kTextColorSecondary,
+                                ),
+                          ),
+                          const SizedBox(height: kSmallPadding),
+                          Text(
+                            'Shop Description: ${userSnapshot.data?['shopDescription'] ?? "-"}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(
+                                  color: kTextColorSecondary,
+                                ),
+                          ),
+                          const SizedBox(height: kSmallPadding),
                           Text(
                             'Status: ${request.status.capitalize()}',
                             style: Theme.of(context)
@@ -146,6 +272,23 @@ class _RequestApprovalScreenState extends State<RequestApprovalScreen> {
                                   color: kTextColorSecondary,
                                 ),
                           ),
+                          if (request.rejectionReason != null && request.rejectionReason!.isNotEmpty)
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: kSmallPadding),
+                                Text(
+                                  'Rejection Reason: ${request.rejectionReason}',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                        color: kErrorColor,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                ),
+                              ],
+                            ),
                           Text(
                             'Created: ${request.createdAt.toDate().toString().substring(0, 16)}',
                             style: Theme.of(context)

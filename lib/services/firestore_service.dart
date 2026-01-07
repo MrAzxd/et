@@ -169,15 +169,28 @@ class FirestoreService {
         .snapshots();
   }
 
+  // Get all requests stream
+  Stream<QuerySnapshot> getAllRequests() {
+    return _firestore
+        .collection(kRequestsCollection)
+        .orderBy('createdAt', descending: true)
+        .snapshots();
+  }
+
   // Update request status
-  Future<void> updateRequestStatus(String requestId, String status) async {
-    if (!['approved', 'rejected'].contains(status)) {
+  Future<void> updateRequestStatus(String requestId, String status, {String? rejectionReason}) async {
+    if (!['pending', 'approved', 'rejected'].contains(status)) {
       throw Exception('Invalid status');
     }
     try {
-      await _firestore.collection(kRequestsCollection).doc(requestId).update({
-        'status': status,
-      });
+      final Map<String, dynamic> updates = {'status': status};
+      if (status == 'pending') {
+        // Clear rejection reason when resubmitting
+        updates['rejectionReason'] = null;
+      } else if (rejectionReason != null && rejectionReason.isNotEmpty) {
+        updates['rejectionReason'] = rejectionReason;
+      }
+      await _firestore.collection(kRequestsCollection).doc(requestId).update(updates);
     } catch (e) {
       throw Exception('Failed to update request status: $e');
     }

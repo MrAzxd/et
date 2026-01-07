@@ -1,8 +1,9 @@
 import 'package:e/widgets/Bottom_Bar.dart';
 import 'package:e/screens/admin/request_approval_screen.dart';
+import 'package:e/screens/admin/rejected_requests_screen.dart';
 import 'package:e/screens/auth/role_selection_screen.dart';
-import 'package:e/screens/auth/signup_screen.dart';
-
+import 'package:e/screens/auth/customer_signup_screen.dart';
+import 'package:e/screens/auth/seller_signup_screen.dart';
 import 'package:e/screens/seller/request_screen.dart';
 import 'package:e/services/auth_service.dart';
 import 'package:e/utils/constants.dart';
@@ -268,22 +269,44 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                   ),
                             const SizedBox(height: kDefaultPadding),
-                            // Signup Link
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pushNamed(
-                                    context, SignupScreen.routeName);
-                              },
-                              child: Text(
-                                'Don’t have an account? Sign Up',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge!
-                                    .copyWith(
-                                      color: kPrimaryColor,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                              ),
+                            // Signup Links
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(
+                                        context, CustomerSignupScreen.routeName);
+                                  },
+                                  child: Text(
+                                    'Sign up as Customer',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge!
+                                        .copyWith(
+                                          color: kPrimaryColor,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                  ),
+                                ),
+                                const SizedBox(width: kDefaultPadding),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(
+                                        context, SellerSignupScreen.routeName);
+                                  },
+                                  child: Text(
+                                    'Sign up as Seller',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge!
+                                        .copyWith(
+                                          color: kSecondaryColor,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                  ),
+                                ),
+                              ],
                             ),
                             // Requests Link
                             TextButton(
@@ -293,6 +316,25 @@ class _LoginScreenState extends State<LoginScreen> {
                               },
                               child: Text(
                                 'View Requests',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .copyWith(
+                                      color: kPrimaryColor,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                              ),
+                            ),
+
+
+                            // Requests Link
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, RejectedRequestsScreen.routeName);
+                              },
+                              child: Text(
+                                'Rejected Requests',
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyLarge!

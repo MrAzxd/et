@@ -5,12 +5,14 @@ class RequestModel {
   final String sellerId;
   final String status; // pending, approved, rejected
   final Timestamp createdAt;
+  final String? rejectionReason;
 
   RequestModel({
     required this.id,
     required this.sellerId,
     required this.status,
     required this.createdAt,
+    this.rejectionReason,
   });
 
   // Convert RequestModel to Fireellstore document
@@ -18,8 +20,7 @@ class RequestModel {
     return {
       'sellerId': sellerId,
       'status': status,
-      'createdAt': createdAt,
-    };
+      'createdAt': createdAt,      'rejectionReason': rejectionReason,    };
   }
 
   // Create RequestModel from Firestore document
@@ -29,6 +30,7 @@ class RequestModel {
       sellerId: map['sellerId'] ?? '',
       status: map['status'] ?? 'pending',
       createdAt: map['createdAt'] ?? Timestamp.now(),
+      rejectionReason: map['rejectionReason'],
     );
   }
 

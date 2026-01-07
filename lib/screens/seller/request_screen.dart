@@ -1,6 +1,7 @@
 import 'package:e/models/request_model.dart';
 import 'package:e/screens/seller/shop_setup_screen.dart';
 import 'package:e/screens/seller/seller_dashboard_screen.dart';
+import 'package:e/screens/auth/SellerScreen.dart';
 import 'package:e/services/firestore_service.dart';
 import 'package:e/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -139,7 +140,11 @@ class _RequestScreenState extends State<RequestScreen> {
         backgroundColor: kPrimaryColor,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Navigator.pushNamedAndRemoveUntil(
+            context,
+            '/login',
+            (route) => false,
+          ),
         ),
       ),
       body: Center(
@@ -202,12 +207,59 @@ class _RequestScreenState extends State<RequestScreen> {
                           ? 'Your request is awaiting admin approval.'
                           : _request!.status == 'approved'
                               ? 'Your request has been approved! Set up your shop.'
-                              : 'Your request was rejected. Please contact support.',
+                              : 'Your request was rejected.',
                       style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                             color: kTextColorSecondary,
                           ),
                       textAlign: TextAlign.center,
                     ),
+                    if (_request!.status == 'rejected' && _request!.rejectionReason != null && _request!.rejectionReason!.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: kDefaultPadding),
+                        child: Container(
+                          padding: const EdgeInsets.all(kDefaultPadding),
+                          decoration: BoxDecoration(
+                            color: kErrorColor.withOpacity(0.1),
+                            border: Border.all(color: kErrorColor.withOpacity(0.3)),
+                            borderRadius: BorderRadius.circular(kDefaultBorderRadius),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Rejection Reason:',
+                                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                      color: kErrorColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                              ),
+                              const SizedBox(height: kSmallPadding),
+                              Text(
+                                _request!.rejectionReason!,
+                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                      color: kTextColor,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    if (_request!.status == 'rejected')
+                      Padding(
+                        padding: const EdgeInsets.only(top: kDefaultPadding),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              SellerShopInfoScreen.routeName,
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: kPrimaryColor,
+                          ),
+                          child: const Text('Edit Shop Information'),
+                        ),
+                      ),
                     if (_request!.status == 'approved')
                       Padding(
                         padding: const EdgeInsets.only(top: kDefaultPadding),
@@ -220,7 +272,7 @@ class _RequestScreenState extends State<RequestScreen> {
                           },
                           child: const Text('Set Up Shop'),
                         ),
-                      ),
+                      ),  
                   ],
                 ),
             ],

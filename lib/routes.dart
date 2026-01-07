@@ -1,8 +1,12 @@
 import 'package:e/models/product_model.dart';
 import 'package:e/screens/admin/request_approval_screen.dart';
+import 'package:e/screens/admin/rejected_requests_screen.dart';
 import 'package:e/screens/auth/login_screen.dart';
 import 'package:e/screens/auth/role_selection_screen.dart';
 import 'package:e/screens/auth/signup_screen.dart';
+import 'package:e/screens/auth/SellerScreen.dart';
+import 'package:e/screens/auth/customer_signup_screen.dart';
+import 'package:e/screens/auth/seller_signup_screen.dart';
 import 'package:e/screens/buyer/home_screen.dart';
 import 'package:e/screens/buyer/product_detail_screen.dart';
 import 'package:e/screens/buyer/product_list_screen.dart';
@@ -24,6 +28,12 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const LoginScreen());
       case SignupScreen.routeName:
         return MaterialPageRoute(builder: (_) => const SignupScreen());
+      case CustomerSignupScreen.routeName:
+        return MaterialPageRoute(builder: (_) => const CustomerSignupScreen());
+      case SellerSignupScreen.routeName:
+        return MaterialPageRoute(builder: (_) => const SellerSignupScreen());
+      case SellerShopInfoScreen.routeName:
+        return MaterialPageRoute(builder: (_) => const SellerShopInfoScreen());
       case RoleSelectionScreen.routeName:
         return MaterialPageRoute(builder: (_) => const RoleSelectionScreen());
       case HomeScreen.routeName:
@@ -55,6 +65,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const SellerBottomBar());
       case RequestApprovalScreen.routeName:
         return MaterialPageRoute(builder: (_) => const RequestApprovalScreen());
+      case RejectedRequestsScreen.routeName:
+        return MaterialPageRoute(builder: (_) => const RejectedRequestsScreen());
       case ProductEditScreen.routeName:
         if (args is ProductModel) {
           return MaterialPageRoute(

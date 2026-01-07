@@ -53,6 +53,7 @@ dependencies:
   image: ^4.2.0
   shimmer: ^3.0.0
   file_picker: ^10.3.7
+  flutter_rating: ^2.0.2
   
   
 
