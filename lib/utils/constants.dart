@@ -35,7 +35,7 @@ const double kSmallPadding = 8.0;
 const double kLargePadding = 24.0;
 
 // Border Radius
-const double kDefaultBorderRadius = 12.0;
+const double kDefaultBorderRadius = 12.0;   
 
 // Firestore Collections
 const String kUsersCollection = 'users';

@@ -51,47 +51,47 @@ class AuthService {
 
   
 
-  Future<User?> sigUpAsSeller(
-      String email,
-      String password,
-      String name,
-      String city,
-      String shopCategory,
-      String cnic,
-      String shopDes,
-      // ignore: non_constant_identifier_names
-      String ShopName,
-      {String? shopAddress}) async {
-    try {
-      final UserCredential userCredential =
-          await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      final user = userCredential.user;
-      if (user != null) {
-        final sellerModel = SellerModel(
-          id: user.uid,
-          email: email,
-          role: 'seller', // Role will be set in RoleSelectionScreen
-          name: name,
-          city: city,
-          cnic: cnic,
-          shopAddress: shopAddress,
-          shopCategory: shopCategory,
-          shopDescription: shopDes,
-          shopName: ShopName,
-        );
-        await _firestore
-            .collection(kUsersCollection)
-            .doc(user.uid)
-            .set(sellerModel.toMap());
-      }
-      return user;
-    } catch (e) {
-      throw Exception('Sign-up failed: $e');
-    }
-  }
+  // Future<User?> sigUpAsSeller(
+  //     String email,
+  //     String password,
+  //     String name,
+  //     String city,
+  //     String shopCategory,
+  //     String cnic,
+  //     String shopDes,
+  //     // ignore: non_constant_identifier_names
+  //     String ShopName,
+  //     {String? shopAddress}) async {
+  //   try {
+  //     final UserCredential userCredential =
+  //         await _auth.createUserWithEmailAndPassword(
+  //       email: email,
+  //       password: password,
+  //     );
+  //     final user = userCredential.user;
+  //     if (user != null) {
+  //       final sellerModel = SellerModel(
+  //         id: user.uid,
+  //         email: email,
+  //         role: 'seller', // Role will be set in RoleSelectionScreen
+  //         name: name,
+  //         city: city,
+  //         cnic: cnic,
+  //         shopAddress: shopAddress,
+  //         shopCategory: shopCategory,
+  //         shopDescription: shopDes,
+  //         shopName: ShopName,
+  //       );
+  //       await _firestore
+  //           .collection(kUsersCollection)
+  //           .doc(user.uid)
+  //           .set(sellerModel.toMap());
+  //     }
+  //     return user;
+  //   } catch (e) {
+  //     throw Exception('Sign-up failed: $e');
+  //   }
+  // }
 
   // Update user role
   Future<void> updateUserRole(String userId, String role) async {

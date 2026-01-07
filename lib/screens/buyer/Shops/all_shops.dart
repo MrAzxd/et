@@ -88,7 +88,7 @@ class AllShopsScreen extends StatelessWidget {
             }
             if (snapshot.hasError) {
               return Center(
-                  child: Text('Error: ${snapshot.error}',
+                  child: SelectableText('Error: ${snapshot.error}',
                       style: const TextStyle(color: kErrorColor)));
             }
             if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {

@@ -23,8 +23,9 @@ class _BottomBarState extends State<BottomBar> {
   // Pages ki list (Aap yahan apne asli screens daal sakte hain)
   final List<Widget> _pages = <Widget>[
     HomeScreen(),
-    // AllShopsScreen(),
-    OrdersDemoScreen(),
+    AllShopsScreen(),
+    // OrdersDemoScreen
+    //(),
     ChatListScreen(),
     // WishlistScreen(),
     AdminImageUploadScreen()
