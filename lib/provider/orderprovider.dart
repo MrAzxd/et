@@ -26,30 +26,12 @@ class OrdersProvider with ChangeNotifier {
   void _initAuthListener() {
     _authSubscription = FirebaseAuth.instance.authStateChanges().listen((user) {
       if (user != null) {
-        _fetchSellerIdAndListen(user.uid);
+        _sellerId = user.uid;
+        _listenToShopOrders();
       } else {
         _clearData();
       }
     });
-  }
-
-  Future<void> _fetchSellerIdAndListen(String uid) async {
-    try {
-      final doc =
-          await FirebaseFirestore.instance.collection('users').doc(uid).get();
-
-      if (doc.exists && doc.data()!.containsKey('sellerId')) {
-        _sellerId = doc.get('sellerId') as String;
-        _listenToShopOrders();
-      } else {
-        // Not a seller or missing ID
-        _sellerId = null;
-        _clearData();
-      }
-    } catch (e) {
-      debugPrint('Error fetching sellerId: $e');
-      _sellerId = null;
-    }
   }
 
   void _listenToShopOrders() {

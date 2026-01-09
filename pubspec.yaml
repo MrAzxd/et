@@ -54,6 +54,7 @@ dependencies:
   shimmer: ^3.0.0
   file_picker: ^10.3.7
   flutter_rating: ^2.0.2
+  hive: ^2.2.3
   
   
 

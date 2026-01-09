@@ -22,9 +22,10 @@ class _SellerShopInfoScreenState extends State<SellerShopInfoScreen> {
   final ownerNameController = TextEditingController();
   final addressController = TextEditingController();
   final cityController = TextEditingController();
-  final categoryController = TextEditingController();
   final cnicController = TextEditingController();
   final descriptionController = TextEditingController();
+
+  String? selectedCategory;
 
   bool _isLoading = false;
   bool _isEditing = false;
@@ -52,7 +53,7 @@ class _SellerShopInfoScreenState extends State<SellerShopInfoScreen> {
             ownerNameController.text = userData['name'] ?? '';
             addressController.text = userData['shopAddress'] ?? '';
             cityController.text = userData['city'] ?? '';
-            categoryController.text = userData['shopCategory'] ?? '';
+            selectedCategory = userData['shopCategory'] ?? '';
             cnicController.text = userData['cnic'] ?? '';
             descriptionController.text = userData['shopDescription'] ?? '';
           });
@@ -80,7 +81,7 @@ class _SellerShopInfoScreenState extends State<SellerShopInfoScreen> {
             shopName: shopNameController.text.trim(),
             city: cityController.text.trim(),
             shopAddress: addressController.text.trim(),
-            shopCategory: categoryController.text.trim(),
+            shopCategory: selectedCategory ?? '',
             cnic: cnicController.text.trim(),
             shopDescription: descriptionController.text.trim(),
           );
@@ -89,7 +90,7 @@ class _SellerShopInfoScreenState extends State<SellerShopInfoScreen> {
           final existingRequest = await _firestoreService.getSellerRequest(user.uid);
           if (existingRequest != null) {
             // Update existing request status to pending (resubmission)
-            await _firestoreService.updateRequestStatus(user.uid, 'pending');
+            await _firestoreService.updateRequestStatus(existingRequest.id, 'pending');
             if (mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
@@ -175,11 +176,7 @@ class _SellerShopInfoScreenState extends State<SellerShopInfoScreen> {
                 icon: Icons.location_city,
               ),
 
-              _inputField(
-                controller: categoryController,
-                label: 'Shop Category',
-                icon: Icons.category,
-              ),
+              _categoryDropdown(),
 
               _inputField(
                 controller: cnicController,
@@ -275,6 +272,35 @@ class _SellerShopInfoScreenState extends State<SellerShopInfoScreen> {
             borderRadius: BorderRadius.circular(10.r),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _categoryDropdown() {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 14.h),
+      child: DropdownButtonFormField<String>(
+        value: selectedCategory,
+        decoration: InputDecoration(
+          labelText: 'Shop Category',
+          prefixIcon: Icon(Icons.category),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.r),
+          ),
+        ),
+        items: kProductCategories.map((String category) {
+          return DropdownMenuItem<String>(
+            value: category,
+            child: Text(category),
+          );
+        }).toList(),
+        onChanged: (String? newValue) {
+          setState(() {
+            selectedCategory = newValue;
+          });
+        },
+        validator: (value) =>
+            value == null || value.isEmpty ? 'Please select a category' : null,
       ),
     );
   }

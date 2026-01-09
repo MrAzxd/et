@@ -35,7 +35,7 @@ class _SellerSettingsScreenState extends State<SellerSettingsScreen> {
     if (user == null) return;
 
     final snapshot =
-        await _firestore.collection("sellers").doc(user.uid).get();
+        await _firestore.collection("users").doc(user.uid).get();
 
     if (snapshot.exists) {
       seller = snapshot.data();
@@ -52,7 +52,7 @@ class _SellerSettingsScreenState extends State<SellerSettingsScreen> {
     final user = _auth.currentUser;
     if (user == null) return;
 
-    await _firestore.collection("sellers").doc(user.uid).update({
+    await _firestore.collection("users").doc(user.uid).update({
       "shopName": shopNameController.text.trim(),
       "phone": phoneController.text.trim(),
       "address": addressController.text.trim(),

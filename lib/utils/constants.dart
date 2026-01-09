@@ -19,7 +19,7 @@ const List<String> kProductCategories = [
   'Grocery',
   'Fruits',
   'Meat',
-  'Dairy'
+  'Dairy'  
 ];
 const List<String> imagenames = [
   'vegetables',

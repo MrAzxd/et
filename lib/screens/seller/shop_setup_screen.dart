@@ -1,4 +1,5 @@
 import 'package:e/screens/seller/seller_dashboard_screen.dart';
+import 'package:e/screens/auth/login_screen.dart';
 import 'package:e/services/firestore_service.dart';
 import 'package:e/utils/constants.dart';
 import 'package:e/utils/validators.dart';
@@ -21,6 +22,29 @@ class _ShopSetupScreenState extends State<ShopSetupScreen> {
   final _descriptionController = TextEditingController();
   final FirestoreService _firestoreService = FirestoreService();
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadExistingShopName();
+  }
+
+  Future<void> _loadExistingShopName() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        final userData = await _firestoreService.getUserData(user.uid);
+        if (userData != null) {
+          setState(() {
+            _nameController.text = userData['shopName'] ?? '';
+            _descriptionController.text = userData['shopDescription'] ?? '';
+          });
+        }
+      }
+    } catch (e) {
+      // Handle error silently
+    }
+  }
 
   @override
   void dispose() {
@@ -88,7 +112,14 @@ class _ShopSetupScreenState extends State<ShopSetupScreen> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () async {
+            await FirebaseAuth.instance.signOut();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) {
+                Navigator.pushReplacementNamed(context, LoginScreen.routeName);
+              }
+            });
+          },
         ),
       ),
       body: Container(

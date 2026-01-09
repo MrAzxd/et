@@ -279,33 +279,33 @@ class _LoginScreenState extends State<LoginScreen> {
                                         context, CustomerSignupScreen.routeName);
                                   },
                                   child: Text(
-                                    'Sign up as Customer',
+                                    'Don\'t have an account ? Sign up',
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyLarge!
                                         .copyWith(
                                           color: kPrimaryColor,
-                                          fontWeight: FontWeight.w600,
+                                          fontWeight: FontWeight.w900,
                                         ),
                                   ),
                                 ),
-                                const SizedBox(width: kDefaultPadding),
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pushNamed(
-                                        context, SellerSignupScreen.routeName);
-                                  },
-                                  child: Text(
-                                    'Sign up as Seller',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge!
-                                        .copyWith(
-                                          color: kSecondaryColor,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                  ),
-                                ),
+                                // const SizedBox(width: kDefaultPadding),
+                                // TextButton(
+                                //   onPressed: () {
+                                //     Navigator.pushNamed(
+                                //         context, SellerSignupScreen.routeName);
+                                //   },
+                                //   child: Text(
+                                //     'Sign up as Seller',
+                                //     style: Theme.of(context)
+                                //         .textTheme
+                                //         .bodyLarge!
+                                //         .copyWith(
+                                //           color: kSecondaryColor,
+                                //           fontWeight: FontWeight.w600,
+                                //         ),
+                                //   ),
+                                // ),
                               ],
                             ),
                             // Requests Link

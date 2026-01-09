@@ -1,9 +1,9 @@
 import 'package:e/screens/auth/login_screen.dart';
-import 'package:e/screens/buyer/home_screen.dart';
 import 'package:e/screens/auth/seller_signup_screen.dart';
 import 'package:e/services/auth_service.dart';
 import 'package:e/utils/constants.dart';
 import 'package:e/utils/validators.dart';
+import 'package:e/widgets/Bottom_Bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
@@ -46,7 +46,7 @@ class _CustomerSignupScreenState extends State<CustomerSignupScreen> {
           'buyer',
         );
         if (user != null) {
-          Navigator.pushReplacementNamed(context, HomeScreen.routeName);
+          Navigator.pushReplacementNamed(context, BottomBar.routeName);
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(

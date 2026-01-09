@@ -10,8 +10,10 @@ import 'package:e/screens/auth/seller_signup_screen.dart';
 import 'package:e/screens/buyer/home_screen.dart';
 import 'package:e/screens/buyer/product_detail_screen.dart';
 import 'package:e/screens/buyer/product_list_screen.dart';
+import 'package:e/widgets/Bottom_Bar.dart';
 import 'package:e/screens/seller/Bottom/S_Bottom_bar.dart';
 import 'package:e/screens/seller/Sellerprofile/Seller_profile.dart';
+import 'package:e/screens/seller/Sellerprofile/earnings_report_screen.dart';
 import 'package:e/screens/seller/product_upload_screen.dart';
 import 'package:e/screens/seller/product_edit_screen.dart';
 import 'package:e/screens/seller/request_screen.dart';
@@ -38,6 +40,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const RoleSelectionScreen());
       case HomeScreen.routeName:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
+      case BottomBar.routeName:
+        return MaterialPageRoute(builder: (_) => const BottomBar());
       case ProductListScreen.routeName:
         if (args is String) {
           return MaterialPageRoute(
@@ -76,6 +80,8 @@ class RouteGenerator {
         return _errorRoute();
       case SellerProfileScreen.routeName:
         return MaterialPageRoute(builder: (_) => const SellerProfileScreen());
+      case EarningsReportScreen.routeName:
+        return MaterialPageRoute(builder: (_) => const EarningsReportScreen());
       default:
         return _errorRoute();
     }

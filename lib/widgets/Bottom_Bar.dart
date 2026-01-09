@@ -10,6 +10,7 @@ import 'package:e/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class BottomBar extends StatefulWidget {
+  static const String routeName = '/buyer-home';
   const BottomBar({super.key});
 
   @override
@@ -27,8 +28,8 @@ class _BottomBarState extends State<BottomBar> {
     // OrdersDemoScreen
     //(),
     ChatListScreen(),
-    // WishlistScreen(),
-    AdminImageUploadScreen()
+    WishlistScreen(),
+    // AdminImageUploadScreen()
   ];
 
   // Tab change hone par yeh function call hoga

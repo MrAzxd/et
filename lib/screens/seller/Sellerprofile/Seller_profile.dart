@@ -1,11 +1,7 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:flutter/material.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e/screens/auth/login_screen.dart';
-import 'package:e/screens/seller/Sellerprofile/Dasbord.dart';
 import 'package:e/screens/seller/Sellerprofile/Setting.dart';
+import 'package:e/screens/seller/Sellerprofile/earnings_report_screen.dart';
 import 'package:e/screens/seller/orders.dart';
 import 'package:e/screens/seller/product_upload_screen.dart';
 import 'package:e/screens/seller/product_edit_screen.dart';
@@ -29,7 +25,13 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Map<String, dynamic>? seller;
+  Map<String, dynamic>? shop;
   bool loading = true;
+
+  // Calculated statistics
+  int totalProducts = 0;
+  int totalOrders = 0;
+  double totalEarnings = 0.0;
 
   @override
   void initState() {
@@ -43,18 +45,76 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
       if (user == null) return;
 
       final snapshot =
-          await _firestore.collection("sellers").doc(user.uid).get();
+          await _firestore.collection("users").doc(user.uid).get();
 
       if (snapshot.exists) {
         setState(() {
           seller = snapshot.data();
-          loading = false;
         });
-      } else {
-        setState(() => loading = false);
+
+        // Load shop data if shopId exists
+        final shopId = seller?['shopId'];
+        if (shopId != null && shopId.isNotEmpty) {
+          await loadShopData(shopId);
+        }
       }
+
+      // Calculate statistics
+      await calculateStatistics(user.uid);
+
+      setState(() => loading = false);
     } catch (e) {
       setState(() => loading = false);
+    }
+  }
+
+  Future<void> loadShopData(String shopId) async {
+    try {
+      final shopSnapshot = await _firestore.collection("shops").doc(shopId).get();
+      if (shopSnapshot.exists) {
+        setState(() {
+          shop = shopSnapshot.data();
+        });
+      }
+    } catch (e) {
+      debugPrint("Error loading shop data: $e");
+    }
+  }
+
+  Future<void> calculateStatistics(String sellerId) async {
+    try {
+      // Calculate total products
+      final productsSnapshot = await _firestore
+          .collection("products")
+          .where("sellerId", isEqualTo: sellerId)
+          .get();
+
+      // Calculate total orders
+      final ordersSnapshot = await _firestore
+          .collection("orders")
+          .where("sellerId", isEqualTo: sellerId)
+          .get();
+
+      // Calculate total earnings from delivered orders
+      final deliveredOrdersSnapshot = await _firestore
+          .collection("orders")
+          .where("sellerId", isEqualTo: sellerId)
+          .where("status", isEqualTo: "Delivered")
+          .get();
+
+      double earnings = 0.0;
+      for (var doc in deliveredOrdersSnapshot.docs) {
+        final data = doc.data();
+        earnings += (data["totalAmount"] ?? 0).toDouble();
+      }
+
+      setState(() {
+        totalProducts = productsSnapshot.docs.length;
+        totalOrders = ordersSnapshot.docs.length;
+        totalEarnings = earnings;
+      });
+    } catch (e) {
+      debugPrint("Error calculating statistics: $e");
     }
   }
 
@@ -109,7 +169,7 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
                             ),
                             const SizedBox(height: 10),
                             Text(
-                              seller?["shopName"] ?? "Shop Name",
+                              shop?["name"] ?? seller?["shopName"] ?? "Shop Name",
                               style: const TextStyle(
                                   fontSize: 20, fontWeight: FontWeight.bold),
                             ),
@@ -131,9 +191,9 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        statBox("Products", seller?["totalProducts"] ?? 0),
-                        statBox("Orders", seller?["totalOrders"] ?? 0),
-                        statBox("Earnings", "${seller?["earnings"] ?? 0} PKR"),
+                        statBox("Products", totalProducts),
+                        statBox("Orders", totalOrders),
+                        statBox("Earnings", "${totalEarnings.toStringAsFixed(0)} PKR"),
                       ],
                     ),
 
@@ -165,7 +225,7 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
                     menuTile(
                       icon: Icons.attach_money_rounded,
                       title: "Earnings Report",
-                      onTap: () {},
+                      onTap: () => Navigator.pushNamed(context, EarningsReportScreen.routeName),
                     ),
 
                     const SizedBox(height: 16),
@@ -192,6 +252,62 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
                       color: kTextColorSecondary.withOpacity(0.3),
                       height: 30,
                     ),
+
+                    // ----------------- Shop Information at Bottom -----------------
+                    title("Shop Information"),
+                    Card(
+                      elevation: 8,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(kDefaultBorderRadius),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                const Icon(Icons.store, color: kPrimaryColor, size: 24),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    shop?["name"] ?? seller?["shopName"] ?? "Shop Name",
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: kTextColor,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 15),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                _shopInfoItem(
+                                  icon: Icons.inventory,
+                                  label: "Products",
+                                  value: totalProducts.toString(),
+                                ),
+                                _shopInfoItem(
+                                  icon: Icons.shopping_bag,
+                                  label: "Orders",
+                                  value: totalOrders.toString(),
+                                ),
+                                _shopInfoItem(
+                                  icon: Icons.attach_money,
+                                  label: "Earnings",
+                                  value: "${totalEarnings.toStringAsFixed(0)} PKR",
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
 
                     menuTile(
                       icon: Icons.logout,
@@ -261,6 +377,35 @@ class _SellerProfileScreenState extends State<SellerProfileScreen> {
         style: const TextStyle(
             fontSize: 18, fontWeight: FontWeight.bold, color: kTextColor),
       ),
+    );
+  }
+
+  Widget _shopInfoItem({
+    required IconData icon,
+    required String label,
+    required String value,
+  }) {
+    return Column(
+      children: [
+        Icon(icon, color: kPrimaryColor, size: 28),
+        const SizedBox(height: 8),
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: kTextColor,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 12,
+            color: kTextColorSecondary,
+          ),
+        ),
+      ],
     );
   }
 }
